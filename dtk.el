@@ -17,8 +17,6 @@
 ;; directly, use `dtk-bible'.
 
 ;;; Code:
-
-
 ;;;; Dependencies
 (require 'cl-lib)
 (require 'dash)
@@ -280,10 +278,7 @@ obtain book, chapter, and verse."
 		  search-buffer
 		  t "-b" dtk-module "-s" "phrase" "-k" word-or-phrase)))
 
-;;;
 ;;; dtk modules/books
-;;;
-
 (defun dtk-bible-module-available-p (module)
   "Indicate whether the module MODULE is available. MODULE is a string."
   (dtk-module-available-p module "Biblical Texts"))
@@ -377,9 +372,8 @@ obtain book, chapter, and verse."
 	(setf dtk-module module)
       (message "Module not selected"))))
 
-;;;
+
 ;;; dtk buffers
-;;; 
 (defun dtk-buffer-exists-p ()
   "Return an indication of whether the default dtk buffer exists."
   (get-buffer dtk-buffer-name))
@@ -414,13 +408,7 @@ obtain book, chapter, and verse."
   "Switch to the dtk search buffer using SWITCH-TO-BUFFER."
   (switch-to-buffer dtk-search-buffer-name))
 
-;;;
 ;;; interact with dtk buffers
-;;;
-(defcustom dtk-verse-raw-citation-verse-number-regexp
-  ":[[:digit:]]+:"
-  "A regular expression used to match verse number(s).")
-
 ;; This parses the specified text using sword-to-org parsing. It
 ;; assumes the text specified by START-POINT and END-POINT is raw
 ;; diatheke output. After parsing, that text is removed and replaced
@@ -841,17 +829,8 @@ Turning on dtk mode runs `text-mode-hook', then `dtk-mode-hook'."
 (define-derived-mode dtk-dict-mode dtk-mode "dtk-dict"
   "Major mode for interacting with dtk dict results.")
 
-;;;
-;;; navigating (by book, chapter, and verse)
-;;;
-(defun dtk-at-verse-citation? ()
-  "Return a true value if point is at a verse citation."
-  ;; could be at a compact citation or at a full citation (e.g., 'John 1:1')
 
-  ;; if at a numeral character, assume at a verse or chapter number
-  (or (dtk-number-at-point (point))
-      (dtk-at-verse-full-citation?)))
-
+;;; Navigation in *dtk* buffer
 (defun dtk-at-verse-full-citation? ()
   "Return a true value if point is at a full verse citation."
   ;; could be at a verse number or at a full citation (e.g., 'John 1:1')
@@ -1035,19 +1014,6 @@ chapter text property value and X does not return a true value."
 	  (t
 	   (beginning-of-buffer)))))
 
-;;;
-;;; miscellany
-;;;
-(defun dtk-random-point ()
-  "Choose a book, at random, in DTK-BOOKS, and then navigate to a random point within that book."
-  (interactive)
-  (let ((book (elt dtk-books (random (length dtk-books)))))
-    (dtk-go-to book nil nil)
-    (goto-char (random (point-max)))))
-
-;;;
-;;; utility functions
-;;;
 (defun dtk-alpha-at-point (&optional point)
   "Match if the character at point POINT (defaults to current point) is an upper-case or lower-case alphabetical letter character (i.e., in the range A through Z or the range a through z)."
   (let ((char-code (char-after (or point (point)))))
@@ -1063,9 +1029,9 @@ chapter text property value and X does not return a true value."
     (and (>= char-code 48)
 	 (<= char-code 57))))
 
-;;;
+
 ;;; establish defaults (relying on dtk code)
-;;;
+
 (unless dtk-module-category
   (setf dtk-module-category "Biblical Texts"))
 (unless dtk-module
